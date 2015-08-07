@@ -1,21 +1,49 @@
+'use strict';
+var messages = [{"message": "message", "Hello": "goodbye",}]
 
-
-var http = require('http');
-
-var somthingHere = require('express')
-
-var messages = [{message: 'hello'}];
-
+var express = require('express');
+var bodyParser = require('body-parser');
 
 
 
+var app = express();
+app.use(bodyParser.json());
+
+
+app.use(function(req, res, next) {
+	res.header('Access-Control-Allow-Origin', '*');
+	res.header('Access-Control-Allow-Methods', 'OPTIONS, GET, POST');
+	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+	next();
+});
+
+app.get('/', function(req, res){
+	res.send(JSON.stringify(messages));
+});
+app.post('/', function(req, res){
+	var newMessage = {
+		message: req.body.message
+	};
+	messages.push(newMessage);
+	console.log(messages);
+	res.send(JSON.stringify(messages));
+});
+
+app.put('/api/person/:id', function(req, res){
+	var ourId = req.params.id;
+	res.send(ourId);
+});
+
+app.options('/', function(req, res) {
+	res.setHeader('Access-Control-Allow-Origin', '*');
+	res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST');
+	res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+	res.send();
+})
 
 
 
-
-
-
-
+app.listen(8181);
 
 
 
